@@ -1,156 +1,77 @@
 import json
 import rich_click as click
-from agent_script_spec.models import AgentScriptSpecification, ComplexStep, Frontmatter, InteractionModel, Phase
-from agent_script_tools.drivers import from_markdown, to_markdown
+from .drivers import from_markdown, to_markdown
+from agent_script_spec.models import AgentScriptSpecification
 from pathlib import Path
 from rich.console import Console
 from rich.json import JSON
 
 
-tools_list = [
-    "Read",
-    "Write",
-    "Edit",
-    "MultiEdit",
-    "Grep",
-    "Glob",
-    "Bash",
-    "LS",
-    "WebSearch",
-    "WebFetch",
-    "Task",
-    "mcp__context7__resolve-library-id",
-    "mcp__context7__get-library-docs",
-    "mcp__sequential-thinking__sequentialthinking",
-]
+example_agent_script = AgentScriptSpecification.model_validate_json(Path("examples/ai-engineer.json").read_text())
 
-spec = AgentScriptSpecification(
-    frontmatter=Frontmatter(
-        name="ai-engineer",
-        description="A highly specialized AI agent for designing, building, and optimizing LLM-powered applications, RAG systems, and complex prompt pipelines.",
-        tools=set(tools_list),
-        model="sonnet",
-    ),
-    name="AI Engineer",
-    role="Senior AI Engineer specializing in LLM-powered applications, RAG systems, and complex prompt pipelines. Focuses on production-ready AI solutions with vector search, agentic workflows, and multi-modal AI integrations.",
-    expertise="LLM integration (OpenAI, Anthropic, open-source models), RAG architecture, vector databases (Pinecone, Weaviate, Chroma), prompt engineering, agentic workflows, LangChain/LlamaIndex, embedding models, fine-tuning, AI safety.",
-    mission="To build the most advanced AI application, RAG system, and prompt pipeline for the user's needs.",
-    key_capabilities={
-        "LLM Application Development": "Production-ready AI applications, API integrations, error handling",
-        "RAG System Architecture": "Vector search, knowledge retrieval, context optimization, multi-modal RAG",
-        "Prompt Engineering": "Advanced prompting techniques, chain-of-thought, few-shot learning",
-    },
-    rules={
-        "DO": [
-            "Always use structured data formats like JSON or YAML for configurations and function calling, ensuring predictability and ease of integration.",
-        ],
-        "DO-NOT": [
-            "Never expose sensitive information. Sanitize inputs and outputs to prevent security vulnerabilities.",
-        ],
-    },
-    mcp_integration={
-        "context7": "Research AI frameworks, model documentation, best practices, safety guidelines",
-        "sequential-thinking": "Complex AI system design, multi-step reasoning workflows, optimization strategies",
-    },
-    interaction_model=InteractionModel(
-        description="The interaction model of the agent script",
-        phases={
-            "Phase 1": Phase(
-                description="The description of the phase",
-                steps={
-                    "Step 1": "The description of the step",
-                    "Step 2": ComplexStep(
-                        description="The description of the step",
-                        steps={
-                            "Important Step": "The description of the step",
-                        },
-                    ),
-                },
-            ),
-            "Phase 2": Phase(
-                description="The description of the phase",
-                steps={
-                    "Step 1": "The description of the step",
-                },
-            ),
-            "Phase 3": Phase(
-                description="The description of the phase",
-                steps={
-                    "Step 1": "The description of the step",
-                },
-                end_of_phase_instructions="The end of the phase instructions",
-            ),
-        },
-    ),
-    deliverables={
-        "Production-Ready Code": "Fully functional code for LLM integration, RAG pipelines, or agent orchestration, complete with error handling and logging.",
-    },
-    core_competencies={
-        "LLM Application Development": "Production-ready AI applications, API integrations, error handling",
-        "RAG System Architecture": "Vector search, knowledge retrieval, context optimization, multi-modal RAG",
-        "Prompt Engineering": "Advanced prompting techniques, chain-of-thought, few-shot learning",
-    },
-    guiding_principles={
-        "LLM Application Development": "Production-ready AI applications, API integrations, error handling",
-        "RAG System Architecture": "Vector search, knowledge retrieval, context optimization, multi-modal RAG",
-        "Prompt Engineering": "Advanced prompting techniques, chain-of-thought, few-shot learning",
-    },
-    tool_usages={
-        "LLM Application Development": "Production-ready AI applications, API integrations, error handling",
-        "RAG System Architecture": "Vector search, knowledge retrieval, context optimization, multi-modal RAG",
-        "Prompt Engineering": "Advanced prompting techniques, chain-of-thought, few-shot learning",
-    },
-    approach={
-        "LLM Application Development": "Production-ready AI applications, API integrations, error handling",
-        "RAG System Architecture": "Vector search, knowledge retrieval, context optimization, multi-modal RAG",
-        "Prompt Engineering": "Advanced prompting techniques, chain-of-thought, few-shot learning",
-    },
-    communication_protocols="The communication protocols of the agent script",
-)
-
-console = Console()
+console = Console(width=120)
 cli = click.Group()
 
 
-@cli.command(name="pretty-print-spec")
-@click.option("--output", is_flag=True, help="Print the spec to a file")
-def pretty_print_spec(output: bool):
-    output_dir = Path("output")
-    output_dir.mkdir(exist_ok=True)
+@cli.command(name="agent-script-json")
+@click.option("--output", "-o", type=click.Path(path_type=Path), help="Output file path (optional)")
+def agent_script_json(output: Path | None):
+    """Show the JSON for the example agent script.
+
+    Args:
+        output: Optional output file path to save the JSON, can contain a full path and filename
+    """
     if output:
-        with open(output_dir / "example.json", "w") as f:
-            f.write(spec.model_dump_json(indent=2))
+        output.parent.mkdir(parents=True, exist_ok=True)
+        with open(output, "w") as f:
+            f.write(example_agent_script.model_dump_json(indent=2))
     else:
-        console.print(JSON(spec.model_dump_json(indent=2)))
+        console.print(JSON(example_agent_script.model_dump_json(indent=2)))
 
 
-@cli.command(name="dump-markdown-schema")
-def dump_markdown_schema():
-    console.print(to_markdown(spec))
+@cli.command(name="agent-script-markdown")
+@click.option("--output", "-o", type=click.Path(path_type=Path), help="Output file path (optional)")
+def agent_script_markdown(output: Path | None):
+    """Show the markdown for the example agent script.
+
+    Args:
+        output: Optional output file path to save the markdown, can contain a full path and filename
+    """
+    markdown_output = to_markdown(example_agent_script)
+    if output:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        with open(output, "w") as f:
+            f.write(markdown_output)
+    else:
+        console.print(markdown_output)
 
 
-@cli.command(name="dump-json-schema")
-def dump_json_schema():
-    # make output dir if not exists
-    output_dir = Path("output")
-    output_dir.mkdir(exist_ok=True)
+@cli.command(name="show-spec-json")
+@click.option("--output", "-o", type=click.Path(path_type=Path), help="Output file path (optional)")
+def show_spec_json(output: Path | None):
+    """Show the JSON schema for the agent script specification.
 
-    with open(output_dir / "schema.json", "w") as f:
-        # overwrite the whole file
-        f.write(json.dumps(AgentScriptSpecification.model_json_schema(), indent=2))
+    Args:
+        output: Optional output file path to save the JSON, can contain a full path and filename
+    """
+    if output:
+        output.parent.mkdir(parents=True, exist_ok=True)
+        with open(output, "w") as f:
+            # overwrite the whole file
+            f.write(json.dumps(AgentScriptSpecification.model_json_schema(), indent=2))
+    else:
+        console.print(JSON(json.dumps(AgentScriptSpecification.model_json_schema(), indent=2)))
 
 
 @cli.command(name="convert-to-markdown")
 @click.argument("json_file", type=click.Path(exists=True, path_type=Path))
 @click.option("--output", "-o", type=click.Path(path_type=Path), help="Output file path (optional)")
-@click.option("--print-raw", is_flag=True, help="Print raw markdown instead of rendered")
-def convert_to_markdown(json_file: Path, output: Path | None, print_raw: bool):
+def convert_to_markdown(json_file: Path, output: Path | None):
     """Convert JSON agent specification to markdown format.
 
     Args:
         json_file: Path to the JSON specification file
-        output: Optional output file path to save the markdown
-        print_raw: If set, prints raw markdown instead of rendered
+        output: Optional output file path to save the markdown, can contain a full path and filename
     """
     try:
         # Load the JSON file
@@ -164,8 +85,7 @@ def convert_to_markdown(json_file: Path, output: Path | None, print_raw: bool):
         markdown_output = to_markdown(spec)
 
         # Print the result
-        if print_raw:
-            console.print(markdown_output)
+        console.print(markdown_output)
 
         # Save to file if output path is provided
         if output:
@@ -205,7 +125,7 @@ def convert_to_json(markdown_file: Path, output: Path | None):
             with open(output, "w") as f:
                 f.write(spec.model_dump_json(indent=2))
         else:
-            console.print(spec.model_dump_json(indent=2))
+            console.print(JSON(spec.model_dump_json(indent=2)))
 
     except FileNotFoundError:
         console.print(f"❌ Error: File '{markdown_file}' not found", style="red")
