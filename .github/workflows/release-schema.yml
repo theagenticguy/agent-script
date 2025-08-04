@@ -1,0 +1,106 @@
+name: Release JSON Schema
+
+on:
+  push:
+    tags:
+      - 'spec-v*'
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag name for schema release'
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  build-schema:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Extract version from tag
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.tag_name }}"
+          else
+            VERSION="${{ github.ref_name }}"
+          fi
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "clean_version=${VERSION#*-v}" >> $GITHUB_OUTPUT
+      
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          activate-environment: true
+          version: "latest"
+      
+      - name: Install workspace dependencies
+        run: uv sync --all-groups
+      
+      - name: Generate JSON schemas
+        run: |
+          uv run poe generate-schema
+        env:
+          SCHEMA_VERSION: ${{ steps.version.outputs.clean_version }}
+      
+      - name: Upload schema artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: json-schemas-${{ steps.version.outputs.version }}
+          path: packages/agent-script-spec/dist/*.json
+
+  create-release:
+    runs-on: ubuntu-latest
+    needs: build-schema
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Extract version info
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.tag_name }}"
+          else
+            VERSION="${{ github.ref_name }}"
+          fi
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+      
+      - name: Download schema artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: json-schemas-${{ steps.version.outputs.version }}
+          path: schemas/
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.version }}
+          name: "Schema Release ${{ steps.version.outputs.version }}"
+          body: |
+            ## Agent Script Specification Schema Release
+            
+            This release contains JSON Schema artifacts for the Agent Script Specification.
+            
+            **Files included:**
+            - `agent_script_spec.json` - Main specification schema
+            
+            **Usage:**
+            ```bash
+            curl -O https://github.com/${{ github.repository }}/releases/download/${{ steps.version.outputs.version }}/agent_script_spec.json
+            ```
+            
+            **Validate JSON against this schema:**
+            ```bash
+            # Using ajv-cli (npm install -g ajv-cli)
+            ajv validate -s agent_script_spec.json -d your_agent_script.json
+            ```
+          files: schemas/*.json
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

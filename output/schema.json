@@ -1,0 +1,326 @@
+{
+  "$defs": {
+    "ComplexStep": {
+      "description": "Step in the interaction model with optional nested sub-steps.",
+      "properties": {
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "steps": {
+          "anyOf": [
+            {
+              "additionalProperties": {
+                "type": "string"
+              },
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Steps"
+        }
+      },
+      "required": [
+        "description"
+      ],
+      "title": "ComplexStep",
+      "type": "object"
+    },
+    "Frontmatter": {
+      "description": "Frontmatter specification for agent scripts.\n\nMostly conforms with Claude Code subagents.",
+      "properties": {
+        "name": {
+          "description": "The name of the agent script",
+          "title": "Name",
+          "type": "string"
+        },
+        "description": {
+          "description": "A short description of the agent script",
+          "title": "Description",
+          "type": "string"
+        },
+        "tools": {
+          "anyOf": [
+            {
+              "items": {
+                "description": "The name of the tool",
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "A list of tools that the agent script can use",
+          "title": "Tools"
+        },
+        "model": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The model that the agent script will use",
+          "title": "Model"
+        }
+      },
+      "required": [
+        "name",
+        "description"
+      ],
+      "title": "Frontmatter",
+      "type": "object"
+    },
+    "InteractionModel": {
+      "description": "Defines the interaction model with phases and steps.",
+      "properties": {
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "phases": {
+          "additionalProperties": {
+            "$ref": "#/$defs/Phase"
+          },
+          "title": "Phases",
+          "type": "object"
+        }
+      },
+      "required": [
+        "description",
+        "phases"
+      ],
+      "title": "InteractionModel",
+      "type": "object"
+    },
+    "Phase": {
+      "description": "Phase in the interaction model containing ordered steps.",
+      "properties": {
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "steps": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/$defs/ComplexStep"
+              }
+            ]
+          },
+          "title": "Steps",
+          "type": "object"
+        },
+        "end_of_phase_instructions": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "End Of Phase Instructions"
+        }
+      },
+      "required": [
+        "description",
+        "steps"
+      ],
+      "title": "Phase",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Agent script specification.",
+  "properties": {
+    "frontmatter": {
+      "$ref": "#/$defs/Frontmatter",
+      "description": "The frontmatter of the agent script."
+    },
+    "name": {
+      "description": "The name of the agent script.",
+      "title": "Name",
+      "type": "string"
+    },
+    "role": {
+      "description": "The role of the agent script.",
+      "title": "Role",
+      "type": "string"
+    },
+    "expertise": {
+      "description": "The expertise of the agent script.",
+      "title": "Expertise",
+      "type": "string"
+    },
+    "mission": {
+      "description": "The mission of the agent script.",
+      "title": "Mission",
+      "type": "string"
+    },
+    "key_capabilities": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "The key capabilities of the agent script.\n\nExample:\n```json\n{\n    \"key_capabilities\": {\n        \"LLM Application Development\": \"Production-ready AI applications, API integrations, error handling\",\n        \"RAG System Architecture\": \"Vector search, knowledge retrieval, context optimization, multi-modal RAG\",\n        \"Prompt Engineering\": \"Advanced prompting techniques, chain-of-thought, few-shot learning\",\n    }\n}\n```",
+      "title": "Key Capabilities",
+      "type": "object"
+    },
+    "mcp_integration": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The MCP integration of the agent script.\n\nExample:\n```json\n{\n    \"mcp_integration\": {\n        \"context7\": \"Research AI frameworks, model documentation, best practices, safety guidelines\",\n        \"sequential-thinking\": \"Complex AI system design, multi-step reasoning workflows, optimization strategies\",\n    }\n}\n```",
+      "title": "Mcp Integration"
+    },
+    "interaction_model": {
+      "$ref": "#/$defs/InteractionModel",
+      "description": "The interaction model of the agent script."
+    },
+    "core_competencies": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The core competencies of the agent script.\n\nExample:\n```json\n{\n    \"core_competencies\": {\n        \"LLM Application Development\": \"Production-ready AI applications, API integrations, error handling\",\n        \"RAG System Architecture\": \"Vector search, knowledge retrieval, context optimization, multi-modal RAG\",\n        \"Prompt Engineering\": \"Advanced prompting techniques, chain-of-thought, few-shot learning\",\n    }\n}\n```",
+      "title": "Core Competencies"
+    },
+    "guiding_principles": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The guiding principles of the agent script.",
+      "title": "Guiding Principles"
+    },
+    "tool_usages": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The tool usages of the agent script.",
+      "title": "Tool Usages"
+    },
+    "rules": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The rules of the agent script.",
+      "title": "Rules"
+    },
+    "communication_protocols": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The communication protocols of the agent script.",
+      "title": "Communication Protocols"
+    },
+    "approach": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The approach of the agent script.",
+      "title": "Approach"
+    },
+    "deliverables": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The deliverables of the agent script.",
+      "title": "Deliverables"
+    }
+  },
+  "required": [
+    "frontmatter",
+    "name",
+    "role",
+    "expertise",
+    "mission",
+    "key_capabilities",
+    "interaction_model"
+  ],
+  "title": "AgentScriptSpecification",
+  "type": "object"
+}

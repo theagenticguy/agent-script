@@ -1,0 +1,225 @@
+[project]
+name = "agent-script-tools"
+version = "0.1.0"
+description = "agent script tools"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "loguru>=0.7.3",
+    "mistune>=3.1.3",
+    "pydantic>=2.11.7",
+    "python-frontmatter>=1.1.0",
+    "rich-click>=1.8.9",
+    "agent-script-spec",
+]
+
+[tool.uv.sources]
+agent-script-spec = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "commitizen>=4.8.3",
+    "mypy>=1.16.1",
+    "poethepoet>=0.35.0",
+    "pre-commit>=4.2.0",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.0.0",
+    "pytest-cov>=6.2.1",
+    "pytest-xdist>=3.7.0",
+    "ruff>=0.12.0",
+]
+docs = [
+    "mike>=2.1.3",
+    "mkdocs>=1.6.1",
+    "mkdocs-llmstxt>=0.2.0",
+    "mkdocs-macros-plugin>=1.3.7",
+    "mkdocs-material>=9.6.14",
+    "mkdocstrings>=0.29.1",
+    "mkdocstrings-python>=1.16.12",
+    "pymdown-extensions>=10.16",
+    "mkdocs-api-autonav>=0.3.0",
+]
+scan = ["bandit>=1.8.5", "pip-audit>=2.9.0"]
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.ruff]
+line-length = 120
+extend-include = ["*.ipynb", "**/__init__.py"]
+target-version = "py313"
+exclude = [
+    ".venv",
+    "venv",
+    "**/__pycache__",
+    "**/node_modules",
+    "**/.mypy_cache",
+    "**/.pytest_cache",
+    "**/.ruff_cache",
+    "**/.coverage",
+    "**/dist",
+    "**/build",
+    "**/env",
+    "**/.venv",
+    "**/.ipynb_checkpoints",
+]
+force-exclude = true
+
+[tool.ruff.lint]
+exclude = ["__init__.py", "**/__init__.py"]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "ARG001", # unused arguments in functions
+]
+ignore = [
+    "C901", # too complex
+    "E501", # line too long
+    "E741", # ambiguous variable name
+    "F402", # unused import
+    "F823", # missing type stubs
+    "D100", # missing docstring in public module
+    "D106", # missing docstring in public function
+]
+
+# Avoid trying to fix flake8-bugbear (`B`) violations.
+unfixable = ["B"]
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+no-sections = true
+combine-as-imports = true
+split-on-trailing-comma = false
+
+[tool.ruff.lint.per-file-ignores]
+"**/*.ipynb" = ["F704"]
+"tests/**/*.py" = ["D100", "D103"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = true
+
+[tool.mypy]
+strict = true
+exclude = [
+    "venv",
+    ".venv",
+    ".*/__pycache__",
+    ".*/node_modules",
+    ".*/.mypy_cache",
+    ".*/.pytest_cache",
+    ".*/.ruff_cache",
+    ".*/.coverage",
+    ".*/dist",
+]
+
+[tool.pyright]
+include = ["src"]
+exclude = [
+    "venv",
+    ".venv",
+    "**/__pycache__",
+    "**/node_modules",
+    "**/.mypy_cache",
+    "**/.pytest_cache",
+    "**/.ruff_cache",
+    "**/.coverage",
+    "**/dist",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
+asyncio_mode = "auto"
+addopts = "--cov=src --cov-report=term-missing --cov-report=xml --cov-fail-under=85 -n auto"
+filterwarnings = [
+    "ignore:unclosed database in <sqlite3.Connection object at:ResourceWarning",
+]
+
+[tool.coverage.run]
+source = ["src"]
+
+[tool.coverage.report]
+skip_covered = true
+show_missing = true
+precision = 2
+exclude_lines = [
+    'def __repr__',
+    'pragma= no cover',
+    'raise NotImplementedError',
+    'if TYPE_CHECKING=',
+    'if typing.TYPE_CHECKING=',
+    '@overload',
+    '@typing.overload',
+    '\(Protocol\)=$',
+    'typing.assert_never',
+    'assert_never',
+    'if __name__ == .__main__.=',
+]
+
+[tool.coverage.paths]
+include = ["src/**/*.py"]
+
+[tool.bandit]
+exclude_dirs = ["venv", "tests"]
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version_provider = "uv"
+tag_format = "v$version"
+update_changelog_on_bump = true
+version_files = [
+    "src/agent_script/__init__.py:__version__",
+    "pyproject.toml:version",
+]
+
+[tool.poe]
+executor.type = "uv"
+
+[tool.poe.tasks]
+
+# QUALITY
+format = "ruff format src tests"
+lint = "ruff check --fix src tests"
+typecheck = "mypy src"
+code-quality = { sequence = [
+    "format",
+    "lint",
+    "typecheck",
+], help = "run quality checks" }
+
+# SECURITY
+pip-audit = "pip-audit --skip-editable"
+bandit = "bandit -r src tests -c pyproject.toml -q"
+semgrep = "uvx semgrep@latest --config 'p/default' --error --skip-unknown-extensions"
+scan = { sequence = [
+    "pip-audit",
+    "bandit",
+    "semgrep",
+], help = "run security scans" }
+
+# TESTING
+test = { cmd = "pytest --asyncio-mode=auto -q", help = "run tests" }
+cov = { cmd = "pytest --asyncio-mode=auto --cov=src --cov-report=term-missing --cov-report=xml:coverage.xml --cov-fail-under=85", help = "run tests w/ coverage + XML artifact" }
+
+# DOCUMENTATION
+docs = { cmd = "mkdocs serve -a localhost:8080", help = "serve documentation" }
+docs-build = { cmd = "mkdocs build", help = "build documentation" }
+docs-deploy = { cmd = "mkdocs gh-deploy", help = "deploy documentation" }
+docs-clean = { cmd = "rm -rf site", help = "clean documentation" }
+
+# SCHEMA GENERATION
+generate-schema = { cmd = "uv run generate-schema", help = "generate JSON schemas from Pydantic models" }
