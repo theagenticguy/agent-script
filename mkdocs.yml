@@ -1,4 +1,5 @@
-site_name: agent script
+site_name: agent-script
+site_url: https://theagenticguy.github.io/agent-script/
 docs_dir: docs/mkdocs
 
 theme:
@@ -48,7 +49,8 @@ markdown_extensions:
       anchor_linenums: true
       line_spans: __span
       pygments_lang_class: true
-  - pymdownx.tabbed
+  - pymdownx.tabbed:
+      alternate_style: true
   - pymdownx.details
   - pymdownx.emoji
   - pymdownx.inlinehilite
@@ -67,22 +69,31 @@ markdown_extensions:
   - md_in_html
 
 plugins:
-  - search
-  - privacy
+  - search:
+      separator: '[\s\-,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
   - macros
+  - privacy
   - mike:
       alias_type: symlink
       canonical_version: latest
   - mkdocstrings:
       handlers:
         python:
-          paths: [src]
+          paths:
+            [
+              "src/agent_script_tools",
+              "packages/agent-script-spec/src/agent_script_spec",
+            ]
           options:
             docstring_style: google
             show_root_heading: true
             show_source: true
   - api-autonav:
-      modules: ["src"]
+      modules:
+        [
+          "src/agent_script_tools",
+          "packages/agent-script-spec/src/agent_script_spec",
+        ]
   - llmstxt:
       sections:
         User Guide:
@@ -106,6 +117,7 @@ extra_javascript:
   # Workaround for site_url breaking mermaid rendering; see the following for more info:
   # https://github.com/squidfunk/mkdocs-material/issues/3742#issuecomment-1076068038
   - https://unpkg.com/mermaid@11/dist/mermaid.min.js
+  - assets/js/feather.min.js
 
 extra_css:
   - stylesheets/extra.css

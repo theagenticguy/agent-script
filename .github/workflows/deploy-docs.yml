@@ -1,0 +1,39 @@
+name: Deploy Documentation to GitHub Pages
+on:
+  push:
+    branches:
+      - main
+      - master
+permissions:
+  contents: write
+jobs:
+  deploy:
+    name: Deploy Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - run: git fetch --prune --unshallow --tags
+
+      - name: Configure Git Credentials
+        run: |
+          git config user.name "The Bot"
+          git config user.email "the-bot@users.noreply.github.com"
+
+      - name: Set up Python and uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          activate-environment: true
+          enable-cache: true
+
+      - name: Install the project
+        run: uv sync --all-groups --all-packages --all-extras
+
+      - name: Validate documentation build
+        run: uv run mkdocs build --strict
+
+      # Deploy using mike for versioning support
+      - name: Deploy documentation
+        run: |
+          uv run poe docs-deploy

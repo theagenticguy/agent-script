@@ -16,6 +16,10 @@ dependencies = [
 [tool.uv.sources]
 agent-script-spec = { workspace = true }
 
+[build-system]
+requires = ["uv_build>=0.8.4,<0.9.0"]
+build-backend = "uv_build"
+
 [dependency-groups]
 dev = [
     "commitizen>=4.8.3",
@@ -218,7 +222,7 @@ cov = { cmd = "pytest --asyncio-mode=auto --cov=src --cov-report=term-missing --
 # DOCUMENTATION
 docs = { cmd = "mkdocs serve -a localhost:8080", help = "serve documentation" }
 docs-build = { cmd = "mkdocs build", help = "build documentation" }
-docs-deploy = { cmd = "mkdocs gh-deploy", help = "deploy documentation" }
+docs-deploy = { cmd = "mkdocs gh-deploy --force", help = "deploy documentation" }
 docs-clean = { cmd = "rm -rf site", help = "clean documentation" }
 
 # SCHEMA GENERATION

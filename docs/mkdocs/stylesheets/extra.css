@@ -4,7 +4,7 @@
    Tailwind CSS Color Palette
    ========================================================================== */
 
-:root {
+   :root {
 	/* Base colors */
 	--color-white: #fff;
 	--color-black: #000;
@@ -468,10 +468,6 @@
 /* Remove excessive Material Design styling */
 .md-typeset .tabbed-set {
 	border-radius: 4px;
-}
-
-.md-typeset .tabbed-labels::before {
-	display: none;
 }
 
 /* Footer improvements */
