@@ -15,7 +15,7 @@ graph TD
     A[AgentScriptSpecification] --> B[Frontmatter]
     A --> C[Core Identity]
     A --> D[Capabilities]
-    A --> E[Interaction Model]
+    A --> E[Interaction Workflow]
     A --> F[Rules & Guidelines]
     
     B --> B1[Name & Description]
@@ -25,13 +25,11 @@ graph TD
     C --> C1[Role & Expertise]
     C --> C2[Mission Statement]
     
-    D --> D1[Key Capabilities]
+    D --> D1[Consolidated Capabilities]
     D --> D2[MCP Integration]
-    D --> D3[Tool Usages]
     
-    E --> E1[Phases]
-    E --> E2[Steps]
-    E --> E3[Instructions]
+    E --> E1[Actions]
+    E --> E2[Requirement Levels]
     
     F --> F1[DO Rules]
     F --> F2[DO-NOT Rules]
@@ -89,12 +87,12 @@ spec = AgentScriptSpecification(
 )
 ```
 
-### Key Capabilities
+### Capabilities
 
-Structure specific skills with detailed descriptions:
+Structure specific skills with detailed descriptions (consolidates previous key_capabilities, core_competencies, and tool_usages):
 
 ```python
-key_capabilities = {
+capabilities = {
     "Literature Review": "Comprehensive analysis of recent papers, identifying trends and gaps",
     "Model Architecture": "Design and optimization of transformer-based models",
     "Experimental Design": "Statistical methodology for robust AI experiments",
@@ -121,68 +119,57 @@ mcp_integration = {
 
 ---
 
-## <i data-feather="git-commit" style="color: var(--md-primary-fg-color);"></i> Interaction Model
+## <i data-feather="git-commit" style="color: var(--md-primary-fg-color);"></i> Interaction Workflow
 
-The interaction model defines multi-phase workflows with structured steps:
+The interaction workflow defines sequential actions with RFC 2119 requirement levels:
 
 ### Basic Structure
 
 ```python
-from agent_script_spec.models import InteractionModel, Phase, ComplexStep
+from agent_script_spec.models import InteractionWorkflow, Action
 
-interaction_model = InteractionModel(
-    description="Three-phase research methodology",
-    phases={
-        "Phase 1": Phase(
-            description="Literature review and problem definition",
-            steps={
-                "Step 1": "Identify research question and scope",
-                "Step 2": "Search relevant literature databases",
-                "Step 3": ComplexStep(
-                    description="Comprehensive literature analysis",
-                    steps={
-                        "Categorization": "Group papers by methodology and findings",
-                        "Gap Analysis": "Identify limitations in current research",
-                        "Synthesis": "Summarize state-of-the-art approaches"
-                    }
-                )
-            },
-            end_of_phase_instructions="Present literature review summary for approval"
+interaction_workflow = InteractionWorkflow(
+    description="Systematic research methodology with iterative refinement",
+    actions=[
+        Action(
+            name="Requirements Analysis",
+            description="Analyze user requirements, define success criteria, and identify technical constraints",
+            requirement_level="MUST"
+        ),
+        Action(
+            name="Literature Review",
+            description="Comprehensive analysis of recent papers, identifying trends and gaps",
+            requirement_level="MUST"
+        ),
+        Action(
+            name="Implementation Planning",
+            description="Create detailed implementation plan with milestones and dependencies",
+            requirement_level="SHOULD"
+        ),
+        Action(
+            name="Performance Optimization",
+            description="Optimize performance, reduce latency, improve accuracy",
+            requirement_level="MAY"
         )
-    }
+    ]
 )
 ```
 
-### Phase Validation
+### RFC 2119 Requirement Levels
 
-Phases must follow these rules:
+Actions use RFC 2119 language to specify requirement levels:
 
-- **Sequential numbering**: "Phase 1", "Phase 2", "Phase 3", etc.
-- **Monotonic ordering**: No gaps in numbering
-- **Starting from 1**: First phase must be "Phase 1"
+- **MUST**: Critical actions that must be executed for the agent to function properly
+- **SHOULD**: Recommended actions that improve quality but are not mandatory
+- **MAY**: Optional actions that provide enhancements but are not required
 
-### Step Validation
+### Action Validation
 
-Steps within each phase must follow:
+Actions must follow these rules:
 
-- **Sequential numbering**: "Step 1", "Step 2", "Step 3", etc.
-- **Monotonic ordering**: No gaps in numbering
-- **Starting from 1**: First step must be "Step 1"
-
-### Complex Steps
-
-Use `ComplexStep` for multi-part operations:
-
-```python
-complex_step = ComplexStep(
-    description="Data preprocessing and feature engineering",
-    steps={
-        "Data Cleaning": "Handle missing values and outliers",
-        "Feature Selection": "Identify most relevant variables",
-        "Scaling": "Normalize features for model training"
-    }
-)
-```
+- **Non-empty list**: At least one action must be defined
+- **Unique names**: Action names should be descriptive and unique
+- **Valid requirement levels**: Only "MUST", "SHOULD", or "MAY" are allowed
 
 ---
 
@@ -209,7 +196,7 @@ rules = {
 
 ### Approach Guidelines
 
-Define methodological preferences:
+Define methodological preferences (consolidates previous guiding_principles and approach):
 
 ```python
 approach = {
@@ -261,7 +248,7 @@ Here's a full specification for an AI research assistant:
         role="Senior AI researcher specializing in NLP and machine learning",
         expertise="Transformer architectures, fine-tuning, evaluation, research methodology",
         mission="Accelerate AI research through expert analysis and implementation",
-        key_capabilities={
+        capabilities={
             "Literature Review": "Systematic analysis of recent papers and trends",
             "Model Design": "Architecture optimization for specific tasks",
             "Experimental Setup": "Rigorous experimental design and validation"
@@ -270,27 +257,40 @@ Here's a full specification for an AI research assistant:
             "context7": "Access latest AI framework documentation",
             "arxiv": "Search and analyze academic papers"
         },
-        interaction_model=InteractionModel(
+        interaction_workflow=InteractionWorkflow(
             description="Systematic research methodology with iterative refinement",
-            phases={
-                "Phase 1": Phase(
-                    description="Problem definition and literature review",
-                    steps={
-                        "Step 1": "Define research question and objectives",
-                        "Step 2": "Conduct comprehensive literature search",
-                        "Step 3": "Analyze and synthesize existing approaches"
-                    }
+            actions=[
+                Action(
+                    name="Problem Definition",
+                    description="Define research question and objectives",
+                    requirement_level="MUST"
                 ),
-                "Phase 2": Phase(
-                    description="Design and implementation",
-                    steps={
-                        "Step 1": "Design experimental methodology",
-                        "Step 2": "Implement solution with best practices",
-                        "Step 3": "Validate approach with appropriate metrics"
-                    },
-                    end_of_phase_instructions="Review implementation before final analysis"
+                Action(
+                    name="Literature Review",
+                    description="Conduct comprehensive literature search and analysis",
+                    requirement_level="MUST"
+                ),
+                Action(
+                    name="Methodology Design",
+                    description="Design experimental methodology and validation approach",
+                    requirement_level="MUST"
+                ),
+                Action(
+                    name="Implementation",
+                    description="Implement solution with best practices and testing",
+                    requirement_level="MUST"
+                ),
+                Action(
+                    name="Documentation",
+                    description="Create comprehensive documentation and usage examples",
+                    requirement_level="SHOULD"
+                ),
+                Action(
+                    name="Performance Optimization",
+                    description="Optimize performance and accuracy metrics",
+                    requirement_level="MAY"
                 )
-            }
+            ]
         ),
         rules={
             "DO": [
@@ -326,23 +326,45 @@ Here's a full specification for an AI research assistant:
       "role": "Senior AI researcher specializing in NLP and machine learning",
       "expertise": "Transformer architectures, fine-tuning, evaluation, research methodology",
       "mission": "Accelerate AI research through expert analysis and implementation",
-      "key_capabilities": {
+      "capabilities": {
         "Literature Review": "Systematic analysis of recent papers and trends",
         "Model Design": "Architecture optimization for specific tasks",
         "Experimental Setup": "Rigorous experimental design and validation"
       },
-      "interaction_model": {
+      "interaction_workflow": {
         "description": "Systematic research methodology with iterative refinement",
-        "phases": {
-          "Phase 1": {
-            "description": "Problem definition and literature review",
-            "steps": {
-              "Step 1": "Define research question and objectives",
-              "Step 2": "Conduct comprehensive literature search",
-              "Step 3": "Analyze and synthesize existing approaches"
-            }
+        "actions": [
+          {
+            "name": "Problem Definition",
+            "description": "Define research question and objectives",
+            "requirement_level": "MUST"
+          },
+          {
+            "name": "Literature Review",
+            "description": "Conduct comprehensive literature search and analysis",
+            "requirement_level": "MUST"
+          },
+          {
+            "name": "Methodology Design",
+            "description": "Design experimental methodology and validation approach",
+            "requirement_level": "MUST"
+          },
+          {
+            "name": "Implementation",
+            "description": "Implement solution with best practices and testing",
+            "requirement_level": "MUST"
+          },
+          {
+            "name": "Documentation",
+            "description": "Create comprehensive documentation and usage examples",
+            "requirement_level": "SHOULD"
+          },
+          {
+            "name": "Performance Optimization",
+            "description": "Optimize performance and accuracy metrics",
+            "requirement_level": "MAY"
           }
-        }
+        ]
       }
     }
     ```
@@ -360,14 +382,14 @@ The specification enforces several validation rules:
     
     - `frontmatter` with valid name, description
     - `name`, `role`, `expertise` 
-    - `interaction_model` with at least one phase
+    - `interaction_workflow` with at least one action
 
 ### Format Constraints
 
 !!! warning "Format Requirements"
-    - Phase keys must match pattern: `Phase \d+` (e.g., "Phase 1")
-    - Step keys must match pattern: `Step \d+` (e.g., "Step 1") 
-    - Numbers must be sequential starting from 1
+    - Action names must be descriptive and unique within the workflow
+    - Requirement levels must be exactly "MUST", "SHOULD", or "MAY"
+    - Actions list must contain at least one action
     - MCP integration keys must match extracted server names
 
 ### Type Safety
@@ -379,7 +401,7 @@ All fields are strictly typed with Pydantic validation:
 invalid_spec = AgentScriptSpecification(
     frontmatter=Frontmatter(name="", description=""),  # Empty name not allowed
     name=123,  # Must be string
-    interaction_model="invalid"  # Must be InteractionModel object
+    interaction_workflow="invalid"  # Must be InteractionWorkflow object
 )
 ```
 

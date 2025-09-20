@@ -7,18 +7,18 @@ from typing import Annotated, Literal, Self
 class Frontmatter(BaseModel):
     """Frontmatter specification for agent scripts.
 
-    MUST conform with Claude Code subagents format."""
+    Mostly conforms with Claude Code subagents."""
 
     model_config = ConfigDict(
         arbitrary_types_allowed=True,
     )
 
-    name: str = Field(description="The name of the agent script. MUST be unique and non-empty.")
-    description: str = Field(description="A short description of the agent script. MUST be non-empty.")
+    name: str = Field(description="The name of the agent script")
+    description: str = Field(description="A short description of the agent script")
     tools: set[Annotated[str, Field(description="The name of the tool")]] | None = Field(
-        None, description="A list of tools that the agent script can use. MAY be empty if no tools are required."
+        None, description="A list of tools that the agent script can use"
     )
-    model: str | None = Field(None, description="The model that the agent script will use. SHOULD be specified for consistency.")
+    model: str | None = Field(None, description="The model that the agent script will use")
 
     @field_serializer("tools")
     def serialize_tools(self, v: set[Annotated[str, Field(description="The name of the tool")]]) -> list[str]:
@@ -43,41 +43,76 @@ class Frontmatter(BaseModel):
         return None if not server_names else sorted(server_names)
 
 
-class Action(BaseModel):
-    """A single action in the interaction workflow.
-    
-    Actions MUST be executed sequentially and SHOULD be self-contained."""
-    
-    name: str = Field(description="The name of the action. MUST be descriptive and unique within the workflow.")
-    description: str = Field(description="Detailed description of what this action accomplishes. MUST be non-empty.")
-    requirement_level: Literal["MUST", "SHOULD", "MAY"] = Field(
-        default="MUST", 
-        description="RFC 2119 requirement level. MUST indicates critical actions, SHOULD indicates recommended actions, MAY indicates optional actions."
-    )
+class ComplexStep(BaseModel):
+    """Step in the interaction model with optional nested sub-steps."""
+
+    description: str
+    steps: dict[str, str] | None = None  # For nested sub-steps (unconstrained keys)
 
 
-class InteractionWorkflow(BaseModel):
-    """Simplified interaction workflow with sequential actions.
-    
-    This replaces the complex Phase/Step/Sub-step hierarchy with a flat list of actions."""
+class Phase(BaseModel):
+    """Phase in the interaction model containing ordered steps."""
 
-    description: str = Field(description="High-level description of the interaction approach. MUST be non-empty.")
-    actions: list[Action] = Field(description="Sequential list of actions to execute. MUST contain at least one action.")
-    
-    @field_validator("actions")
+    description: str
+    steps: dict[str, str | ComplexStep]
+    end_of_phase_instructions: str | None = None
+
+    @field_validator("steps")
     @classmethod
-    def validate_actions_not_empty(cls, v: list[Action]) -> list[Action]:
-        """Validate that actions list is not empty."""
-        if not v:
-            raise ValueError("Actions list MUST contain at least one action")
+    def validate_step_keys(cls, v: dict[str, str | ComplexStep]) -> dict[str, str | ComplexStep]:
+        """Validate that step keys follow the pattern 'Step N' where N is monotonically increasing."""
+        step_numbers = []
+
+        for key in v.keys():
+            match = re.match(r"^Step (\d+)$", key)
+            if not match:
+                raise ValueError(f"Step key '{key}' must match pattern 'Step N' where N is a number")
+            step_numbers.append(int(match.group(1)))
+
+        # Check monotonically increasing starting from 1
+        step_numbers.sort()
+        expected = list(range(1, len(step_numbers) + 1))
+        if step_numbers != expected:
+            raise ValueError(
+                f"Step numbers must be monotonically increasing starting from 1. "
+                f"Got {step_numbers}, expected {expected}"
+            )
+
+        return v
+
+
+class InteractionModel(BaseModel):
+    """Defines the interaction model with phases and steps."""
+
+    description: str
+    phases: dict[str, Phase]
+
+    @field_validator("phases")
+    @classmethod
+    def validate_phase_keys(cls, v: dict[str, Phase]) -> dict[str, Phase]:
+        """Validate that phase keys follow the pattern 'Phase N' where N is monotonically increasing."""
+        phase_numbers = []
+
+        for key in v.keys():
+            match = re.match(r"^Phase (\d+)$", key)
+            if not match:
+                raise ValueError(f"Phase key '{key}' must match pattern 'Phase N' where N is a number")
+            phase_numbers.append(int(match.group(1)))
+
+        # Check monotonically increasing starting from 1
+        phase_numbers.sort()
+        expected = list(range(1, len(phase_numbers) + 1))
+        if phase_numbers != expected:
+            raise ValueError(
+                f"Phase numbers must be monotonically increasing starting from 1. "
+                f"Got {phase_numbers}, expected {expected}"
+            )
+
         return v
 
 
 class AgentScriptSpecification(BaseModel):
-    """Simplified agent script specification with RFC 2119 language.
-
-    This specification MUST be used for all agent definitions and SHOULD be validated
-    before deployment."""
+    """Agent script specification."""
 
     model_config = ConfigDict(
         validate_default=True,
@@ -89,29 +124,27 @@ class AgentScriptSpecification(BaseModel):
     )
 
     frontmatter: Frontmatter
-    """The frontmatter of the agent script. MUST be present and valid."""
+    """The frontmatter of the agent script."""
 
     name: str
-    """The name of the agent script. MUST be human-readable and descriptive."""
+    """The name of the agent script."""
 
     role: str
-    """The role of the agent script. MUST clearly define the agent's primary function."""
+    """The role of the agent script."""
 
     expertise: str
-    """The expertise of the agent script. MUST specify domain knowledge and technical skills."""
+    """The expertise of the agent script."""
 
     mission: str
-    """The mission of the agent script. MUST define the agent's primary objective."""
+    """The mission of the agent script."""
 
-    capabilities: dict[str, str]
-    """The capabilities of the agent script. MUST define specific skills and competencies.
+    key_capabilities: dict[str, str]
+    """The key capabilities of the agent script.
 
-    This field consolidates the previous key_capabilities, core_competencies, and tool_usages.
-    
     Example:
     ```json
     {
-        "capabilities": {
+        "key_capabilities": {
             "LLM Application Development": "Production-ready AI applications, API integrations, error handling",
             "RAG System Architecture": "Vector search, knowledge retrieval, context optimization, multi-modal RAG",
             "Prompt Engineering": "Advanced prompting techniques, chain-of-thought, few-shot learning",
@@ -121,7 +154,7 @@ class AgentScriptSpecification(BaseModel):
     """
 
     mcp_integration: dict[str, str] | None = None
-    """The MCP integration of the agent script. SHOULD be present if MCP tools are used.
+    """The MCP integration of the agent script.
 
     Example:
     ```json
@@ -134,59 +167,41 @@ class AgentScriptSpecification(BaseModel):
     ```
     """
 
-    interaction_workflow: InteractionWorkflow
-    """The interaction workflow of the agent script. MUST define the execution sequence."""
+    interaction_model: InteractionModel
+    """The interaction model of the agent script."""
 
-    approach: dict[str, str] | None = None
-    """The approach of the agent script. MAY define methodological preferences.
+    core_competencies: dict[str, str] | None = None
+    """The core competencies of the agent script.
 
-    This field consolidates the previous guiding_principles and approach fields.
-    
     Example:
     ```json
     {
-        "approach": {
-            "Statistical Rigor": "Use appropriate statistical tests and confidence intervals",
-            "Reproducibility": "Ensure all experiments are documented and reproducible",
-            "Ethical Considerations": "Address potential biases and fairness concerns"
+        "core_competencies": {
+            "LLM Application Development": "Production-ready AI applications, API integrations, error handling",
+            "RAG System Architecture": "Vector search, knowledge retrieval, context optimization, multi-modal RAG",
+            "Prompt Engineering": "Advanced prompting techniques, chain-of-thought, few-shot learning",
         }
     }
     ```
     """
+
+    guiding_principles: dict[str, str] | None = None
+    """The guiding principles of the agent script."""
+
+    tool_usages: dict[str, str] | None = None
+    """The tool usages of the agent script."""
 
     rules: dict[Literal["DO"] | Literal["DO-NOT"], list[str]] | None = None
-    """The rules of the agent script. SHOULD define behavioral constraints.
+    """The rules of the agent script."""
 
-    Example:
-    ```json
-    {
-        "rules": {
-            "DO": [
-                "Always use structured data formats like JSON or YAML for configurations",
-                "Validate all inputs before processing"
-            ],
-            "DO-NOT": [
-                "Never expose sensitive information",
-                "Don't ignore error conditions"
-            ]
-        }
-    }
-    ```
-    """
+    communication_protocols: str | None = None
+    """The communication protocols of the agent script."""
+
+    approach: dict[str, str] | None = None
+    """The approach of the agent script."""
 
     deliverables: dict[str, str] | None = None
-    """The deliverables of the agent script. SHOULD specify expected outputs and formats.
-
-    Example:
-    ```json
-    {
-        "deliverables": {
-            "Production-Ready Code": "Fully functional code with error handling and logging",
-            "Documentation": "Comprehensive user and technical documentation"
-        }
-    }
-    ```
-    """
+    """The deliverables of the agent script."""
 
     @model_validator(mode="after")
     def validate_mcp_integration_keys(self) -> Self:
