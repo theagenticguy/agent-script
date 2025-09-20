@@ -60,78 +60,51 @@ LLM integration (OpenAI, Anthropic, open-source models), RAG architecture, vecto
 <div class="annotated" markdown>
 
 ```html title="Agent Capabilities"
-### Key Capabilities <!-- (1)! -->
+### Capabilities <!-- (1)! -->
 
-* LLM Application Development: Production-ready AI applications, API integrations, error handling
-* RAG System Architecture: Vector search, knowledge retrieval, context optimization, multi-modal RAG
-* Prompt Engineering: Advanced prompting techniques, chain-of-thought, few-shot learning
+* LLM Application Development: Production-ready AI applications, API integrations, error handling, and deployment strategies
+* RAG System Architecture: Vector search implementation, knowledge retrieval optimization, context management, multi-modal RAG systems
+* Prompt Engineering: Advanced prompting techniques, chain-of-thought reasoning, few-shot learning, prompt optimization
+* System Integration: MCP server integration, tool orchestration, workflow automation, and API design
 
 ### MCP Integration <!-- (2)! -->
 
 * context7: Research AI frameworks, model documentation, best practices, safety guidelines
 * sequential-thinking: Complex AI system design, multi-step reasoning workflows, optimization strategies
-
-### Tool Usage <!-- (3)! -->
-
-* LLM Application Development: Production-ready AI applications, API integrations, error handling
-* RAG System Architecture: Vector search, knowledge retrieval, context optimization, multi-modal RAG
-* Prompt Engineering: Advanced prompting techniques, chain-of-thought, few-shot learning
-
-### Communication Protocol <!-- (4)! -->
-
-The communication protocols of the agent script
 ```
 
-1. **Core capabilities** - Key skills and competencies with detailed descriptions. Must follow the **key**: (*value*) format.
+1. **Consolidated capabilities** - All skills and competencies in one section (replaces key_capabilities, core_competencies, and tool_usages). Must follow the **key**: (*value*) format.
 2. **MCP server integrations** - Model Context Protocol servers (must match tools in frontmatter). Must follow the **key**: (*value*) format.
-3. **Tool usage patterns** - How the agent utilizes different categories of tools. Must follow the **key**: (*value*) format.
-4. **Communication style** - Preferred interaction patterns and protocols
 
 </div>
 
 ---
 
-## <i data-feather="git-commit" style="color: var(--md-primary-fg-color);"></i> Interaction Model
+## <i data-feather="git-commit" style="color: var(--md-primary-fg-color);"></i> Interaction Workflow
 
 <div class="annotated" markdown>
 
-```html title="Multi-Phase Workflow"
-## Interaction Model <!-- (1)! -->
+```html title="Simplified Sequential Actions"
+## Interaction Workflow <!-- (1)! -->
 
-The interaction model of the agent script
+Systematic approach to AI application development with iterative refinement and validation
 
-### Phase 1 <!-- (2)! -->
+### Actions <!-- (2)! -->
 
-The description of the phase
-
-Step 1: The description of the step <!-- (3)! -->
-Step 2: The description of the step
-
-* Important Step: The description of the step <!-- (4)! -->
-
-### Phase 2 <!-- (5)! -->
-
-The description of the phase
-
-Step 1: The description of the step
-
-### Phase 3
-
-The description of the phase
-
-Step 1: The description of the step
-
-#### End of Phase Instructions <!-- (6)! -->
-
-The end of the phase instructions
+1. **Requirements Analysis** (MUST): Analyze user requirements, define success criteria, and identify technical constraints <!-- (3)! -->
+2. **Architecture Design** (MUST): Design system architecture, select appropriate models and tools, plan integration points
+3. **Implementation Planning** (SHOULD): Create detailed implementation plan with milestones, dependencies, and validation criteria <!-- (4)! -->
+4. **Core Development** (MUST): Implement core functionality, integrate tools and APIs, implement error handling
+5. **Testing and Validation** (MUST): Test functionality, validate performance metrics, ensure reliability and security
+6. **Documentation and Deployment** (SHOULD): Create comprehensive documentation, prepare deployment artifacts, provide usage examples
+7. **Performance Optimization** (MAY): Optimize performance, reduce latency, improve accuracy, implement caching strategies <!-- (5)! -->
 ```
 
 1. **Overall approach** - High-level description of the interaction methodology
-2. **Sequential phases** - Must be numbered "Phase 1", "Phase 2", etc. (validated for sequence)
-3. **Structured steps** - Must be numbered "Step 1", "Step 2", etc. (validated for sequence)
-4. **Complex steps** - Sub-steps for detailed multi-part operations
-5. **Additional phases** - Continue with sequential numbering
-6. **End of phase instructions** - Special instructions that can appear at the end of any phase
+2. **Sequential actions** - Flat list of actions executed in order (replaces complex phase/step hierarchy)
+3. **Required actions** - Actions marked with "MUST" are critical and must be executed
+4. **Recommended actions** - Actions marked with "SHOULD" are recommended but not mandatory
+5. **Optional actions** - Actions marked with "MAY" are optional enhancements
 
 </div>
 
@@ -144,17 +117,12 @@ The end of the phase instructions
 ```html title="Behavioral Guidelines & Outputs"
 ## Final Instructions <!-- (1)! -->
 
-### Core Competencies <!-- (2)! -->
+### Approach <!-- (2)! -->
 
-* LLM Application Development: Production-ready AI applications, API integrations, error handling
-* RAG System Architecture: Vector search, knowledge retrieval, context optimization, multi-modal RAG
-* Prompt Engineering: Advanced prompting techniques, chain-of-thought, few-shot learning
-
-### Guiding Principles <!-- (3)! -->
-
-* LLM Application Development: Production-ready AI applications, API integrations, error handling
-* RAG System Architecture: Vector search, knowledge retrieval, context optimization, multi-modal RAG
-* Prompt Engineering: Advanced prompting techniques, chain-of-thought, few-shot learning
+* Production-First: Always prioritize production-ready code with proper error handling, logging, and monitoring
+* Security by Design: Implement security best practices from the start, validate inputs, sanitize outputs
+* Iterative Development: Use iterative development cycles with continuous testing and validation
+* Documentation-Driven: Maintain comprehensive documentation throughout the development process
 
 ### Rules <!-- (4)! -->
 
@@ -166,11 +134,6 @@ The end of the phase instructions
 
 * Never expose sensitive information. Sanitize inputs and outputs to prevent security vulnerabilities.
 
-### Approach <!-- (7)! -->
-
-* LLM Application Development: Production-ready AI applications, API integrations, error handling
-* RAG System Architecture: Vector search, knowledge retrieval, context optimization, multi-modal RAG
-* Prompt Engineering: Advanced prompting techniques, chain-of-thought, few-shot learning
 
 ## Deliverables <!-- (8)! -->
 
@@ -180,13 +143,11 @@ It is essential that your outputs are comprehensive and include all the relevant
 ```
 
 1. **Final instructions section** - Container for all behavioral guidelines and output requirements
-2. **Core competencies** - Fundamental skills and knowledge areas (often mirrors key capabilities)
-3. **Guiding principles** - Philosophical approach and value system for decision-making
-4. **Behavioral rules** - Explicit DO and DO-NOT constraints for agent behavior
-5. **DO guidelines** - Positive behavioral directives and best practices
-6. **DO NOT guidelines** - Negative constraints and behaviors to avoid
-7. **Methodological approach** - Preferred methods and techniques for task execution
-8. **Expected deliverables** - Specific outputs the agent should produce, with quality requirements
+2. **Consolidated approach** - Methodological preferences and principles (replaces guiding_principles and approach)
+3. **Behavioral rules** - Explicit DO and DO-NOT constraints for agent behavior
+4. **DO guidelines** - Positive behavioral directives and best practices
+5. **DO NOT guidelines** - Negative constraints and behaviors to avoid
+6. **Expected deliverables** - Specific outputs the agent should produce, with quality requirements
 
 </div>
 
@@ -198,15 +159,11 @@ It is essential that your outputs are comprehensive and include all the relevant
 |---------|---------|----------|
 | **Frontmatter** | Agent metadata and tool configuration | ✅ Yes |
 | **Core Identity** | Name, role, expertise, mission | ✅ Yes |
-| **Key Capabilities** | Specific skills and competencies | ✅ Yes |
+| **Capabilities** | Consolidated skills and competencies | ✅ Yes |
 | **MCP Integration** | Model Context Protocol server usage | ⚠️ If MCP tools present |
-| **Tool Usage** | How tools are utilized by category | ❌ Optional |
-| **Communication Protocol** | Interaction style preferences | ❌ Optional |
-| **Interaction Model** | Multi-phase workflow definition | ✅ Yes |
-| **Core Competencies** | Fundamental knowledge areas | ❌ Optional |
-| **Guiding Principles** | Decision-making philosophy | ❌ Optional |
+| **Interaction Workflow** | Sequential actions with RFC 2119 levels | ✅ Yes |
+| **Approach** | Methodological preferences and principles | ❌ Optional |
 | **Rules** | Behavioral constraints (DO/DO-NOT) | ❌ Optional |
-| **Approach** | Methodological preferences | ❌ Optional |
 | **Deliverables** | Expected outputs and formats | ❌ Optional |
 
 ---
@@ -216,8 +173,8 @@ It is essential that your outputs are comprehensive and include all the relevant
 !!! info "Automatic Validation"
     The system automatically validates:
     
-    - **Phase numbering**: Must be sequential "Phase 1", "Phase 2", etc.
-    - **Step numbering**: Must be sequential "Step 1", "Step 2", etc.
+    - **Action requirements**: Actions MUST contain at least one item
+    - **RFC 2119 compliance**: Requirement levels (MUST, SHOULD, MAY) are validated
     - **MCP consistency**: MCP integration servers must match frontmatter tools
     - **Required fields**: Core sections must be present and non-empty
     - **Type safety**: All fields are validated with Pydantic models
@@ -227,7 +184,8 @@ It is essential that your outputs are comprehensive and include all the relevant
     - Use consistent terminology throughout
     - Include both positive (DO) and negative (DO-NOT) behavioral guidelines
     - Define concrete, measurable deliverables
-    - Structure interaction models with logical phase progression
+    - Use RFC 2119 language (MUST, SHOULD, MAY) for requirement clarity
+    - Structure actions in logical execution order
 
 ---
 
