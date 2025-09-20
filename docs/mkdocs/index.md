@@ -173,6 +173,14 @@ assert spec == spec_from_md  # Round-trip conversion preserves data
 
     <i data-feather="arrow-right" style="color: var(--md-primary-fg-color);"></i> [View examples](examples/)
 
+-   <i data-feather="git-pull-request" style="color: var(--md-primary-fg-color);"></i> **RFC: Spec Simplification**
+
+    ---
+
+    Draft proposal to simplify the spec and use RFC 2119 terms
+
+    <i data-feather="arrow-right" style="color: var(--md-primary-fg-color);"></i> [Read the RFC](user-guide/rfc-simplify-spec.md)
+
 </div>
 
 ---

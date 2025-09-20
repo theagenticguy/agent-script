@@ -110,6 +110,12 @@ uv run poe docs
 uv run poe generate-schema
 ```
 
+### Proposals & RFCs
+
+See the draft RFC addressing spec simplification and RFC 2119 terminology:
+
+- `docs/mkdocs/user-guide/rfc-simplify-spec.md`
+
 ### Commiting
 
 ```bash
