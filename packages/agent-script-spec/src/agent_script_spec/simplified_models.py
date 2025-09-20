@@ -85,9 +85,18 @@ class InteractionWorkflow(BaseModel):
 
 
 class RequirementRule(BaseModel):
-    """A single requirement rule using RFC 2119 language."""
+    """A single requirement rule using RFC 2119 language.
     
-    requirement: str = Field(description="The requirement statement. This MUST start with MUST, SHOULD, or MAY.")
+    Requirements MUST use RFC 2119 keywords to specify obligation levels:
+    - MUST: Absolute requirement (mandatory)
+    - MUST NOT: Absolute prohibition (forbidden)  
+    - SHOULD: Strong recommendation (preferred)
+    - SHOULD NOT: Strong recommendation against (discouraged)
+    - MAY: Optional or permissible (allowed)
+    - MAY NOT: Optional prohibition (not required to avoid)
+    """
+    
+    requirement: str = Field(description="The requirement statement. This MUST start with MUST, MUST NOT, SHOULD, SHOULD NOT, MAY, or MAY NOT.")
     rationale: str | None = Field(None, description="Optional explanation of why this requirement exists.")
 
 
@@ -138,7 +147,10 @@ class SimplifiedAgentScriptSpecification(BaseModel):
     """The simplified interaction workflow. This MUST define how the agent operates."""
 
     requirements: list[RequirementRule] | None = None
-    """Behavioral requirements using RFC 2119 language. Each rule MUST use MUST, SHOULD, or MAY.
+    """Behavioral requirements using RFC 2119 language. Each rule MUST use RFC 2119 keywords.
+    
+    Supported keywords: MUST, MUST NOT, SHOULD, SHOULD NOT, MAY, MAY NOT.
+    Use negative forms (MUST NOT, SHOULD NOT) to specify prohibited behaviors and constraints.
     
     This consolidates the previous rules, guiding_principles, and approach fields.
     """

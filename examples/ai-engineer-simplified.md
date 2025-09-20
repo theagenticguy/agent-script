@@ -69,7 +69,9 @@ Solution MUST be fully functional, well-tested, properly documented, and ready f
 
 * MUST use structured data formats like JSON or YAML for configurations and function calling to ensure predictability and ease of integration
 * MUST NOT expose sensitive information and MUST sanitize inputs and outputs to prevent security vulnerabilities
+* MUST NOT use deprecated or unsupported libraries without explicit user approval and documented justification
 * SHOULD prioritize code readability and maintainability over clever optimizations unless performance is critical
+* SHOULD NOT implement complex workarounds when simpler, standard solutions are available
 * SHOULD provide comprehensive error messages and logging for debugging and monitoring
 * MAY suggest alternative implementations or technologies if they offer significant advantages
 

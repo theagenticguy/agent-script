@@ -48,13 +48,19 @@ class TestSimplifiedModels:
             assert "LLM" in spec.role
             assert len(spec.capabilities) == 4
             assert len(spec.workflow.steps) == 4
-            assert len(spec.requirements) == 5
+            assert len(spec.requirements) == 7
             
             # Test RFC 2119 compliance
-            rfc_keywords = ["MUST", "SHOULD", "MAY"]
+            rfc_keywords = ["MUST", "MUST NOT", "SHOULD", "SHOULD NOT", "MAY", "MAY NOT"]
             for req in spec.requirements:
                 has_rfc_keyword = any(keyword in req.requirement.upper() for keyword in rfc_keywords)
                 assert has_rfc_keyword, f"Requirement should use RFC 2119 language: {req.requirement}"
+            
+            # Test that we have both positive and negative requirements
+            has_must_not = any("MUST NOT" in req.requirement.upper() for req in spec.requirements)
+            has_should_not = any("SHOULD NOT" in req.requirement.upper() for req in spec.requirements)
+            assert has_must_not, "Specification should include MUST NOT requirements for prohibited behaviors"
+            assert has_should_not, "Specification should include SHOULD NOT requirements for discouraged behaviors"
     
     def test_markdown_conversion(self):
         """Test conversion between JSON and Markdown."""

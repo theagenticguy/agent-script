@@ -139,6 +139,9 @@ Transform your existing rules using these patterns:
 - **"Should do Y"** → **"SHOULD do Y"**  
 - **"Can do Z"** → **"MAY do Z"**
 - **"Never do A"** → **"MUST NOT do A"**
+- **"Avoid doing B"** → **"SHOULD NOT do B"**
+- **"Don't use C unless..."** → **"MUST NOT use C without..."**
+- **"Prefer X over Y"** → **"SHOULD use X" + "SHOULD NOT use Y unless justified"**
 
 ## Example Migration
 
@@ -161,8 +164,8 @@ Transform your existing rules using these patterns:
     }
   },
   "rules": {
-    "DO": ["Use best practices"],
-    "DO-NOT": ["Expose secrets"]
+    "DO": ["Use best practices", "Follow security guidelines"],
+    "DO-NOT": ["Expose secrets", "Use deprecated libraries", "Ignore error handling"]
   }
 }
 ```
@@ -187,7 +190,16 @@ Transform your existing rules using these patterns:
       "requirement": "MUST use best practices for development"
     },
     {
+      "requirement": "MUST follow security guidelines in all implementations"
+    },
+    {
       "requirement": "MUST NOT expose secrets or sensitive information"
+    },
+    {
+      "requirement": "MUST NOT use deprecated libraries without explicit justification"
+    },
+    {
+      "requirement": "SHOULD NOT ignore error handling in any component"
     }
   ]
 }
@@ -204,11 +216,15 @@ from agent_script_spec.simplified_models import SimplifiedAgentScriptSpecificati
 spec = SimplifiedAgentScriptSpecification.model_validate(your_data)
 
 # Check RFC 2119 compliance
-rfc_keywords = ["MUST", "SHOULD", "MAY"]
+rfc_keywords = ["MUST", "MUST NOT", "SHOULD", "SHOULD NOT", "MAY", "MAY NOT"]
 for req in spec.requirements or []:
     has_rfc = any(keyword in req.requirement.upper() for keyword in rfc_keywords)
     if not has_rfc:
         print(f"Warning: Non-RFC 2119 requirement: {req.requirement}")
+    
+    # Encourage use of negative requirements for constraints
+    if "NOT" in req.requirement.upper():
+        print(f"✅ Good use of negative requirement: {req.requirement[:50]}...")
 ```
 
 ## Benefits of Migration

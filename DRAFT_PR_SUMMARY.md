@@ -58,10 +58,12 @@ workflow:
 ### 📜 RFC 2119 Compliance
 
 Requirements now use standardized language:
-- **MUST** - Absolute requirements
-- **SHOULD** - Strong recommendations  
-- **MAY** - Optional features
-- **MUST NOT** - Absolute prohibitions
+- **MUST** - Absolute requirements (mandatory)
+- **MUST NOT** - Absolute prohibitions (forbidden)
+- **SHOULD** - Strong recommendations (preferred)
+- **SHOULD NOT** - Strong recommendations against (discouraged)
+- **MAY** - Optional features (allowed)
+- **MAY NOT** - Optional prohibitions (not required to avoid)
 
 Example:
 ```json
@@ -73,6 +75,9 @@ Example:
     },
     {
       "requirement": "MUST NOT expose sensitive information"
+    },
+    {
+      "requirement": "SHOULD NOT implement complex workarounds when simpler solutions are available"
     }
   ]
 }
@@ -130,10 +135,10 @@ Detailed migration instructions provided in `MIGRATION_GUIDE.md`:
 - Ambiguous requirement language
 
 ### Simplified Specification  
-- 67 lines of JSON (-35%)
+- 73 lines of JSON (-30%)
 - Flat workflow structure
 - 6 top-level fields with clear purposes
-- RFC 2119 compliant requirements
+- RFC 2119 compliant requirements with MUST NOT and SHOULD NOT constraints
 
 ## Files Changed
 

@@ -80,7 +80,13 @@
       "requirement": "MUST NOT expose sensitive information and MUST sanitize inputs and outputs to prevent security vulnerabilities"
     },
     {
+      "requirement": "MUST NOT use deprecated or unsupported libraries without explicit user approval and documented justification"
+    },
+    {
       "requirement": "SHOULD prioritize code readability and maintainability over clever optimizations unless performance is critical"
+    },
+    {
+      "requirement": "SHOULD NOT implement complex workarounds when simpler, standard solutions are available"
     },
     {
       "requirement": "SHOULD provide comprehensive error messages and logging for debugging and monitoring"
