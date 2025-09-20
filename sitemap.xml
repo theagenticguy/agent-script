@@ -2,54 +2,62 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://theagenticguy.github.io/agent-script/</loc>
-         <lastmod>2025-08-05</lastmod>
+         <lastmod>2025-09-20</lastmod>
     </url>
     <url>
          <loc>https://theagenticguy.github.io/agent-script/examples/</loc>
-         <lastmod>2025-08-05</lastmod>
+         <lastmod>2025-09-20</lastmod>
     </url>
     <url>
          <loc>https://theagenticguy.github.io/agent-script/user-guide/conversion/</loc>
-         <lastmod>2025-08-05</lastmod>
+         <lastmod>2025-09-20</lastmod>
     </url>
     <url>
          <loc>https://theagenticguy.github.io/agent-script/user-guide/installation/</loc>
-         <lastmod>2025-08-05</lastmod>
+         <lastmod>2025-09-20</lastmod>
     </url>
     <url>
          <loc>https://theagenticguy.github.io/agent-script/user-guide/mcp-integration/</loc>
-         <lastmod>2025-08-05</lastmod>
+         <lastmod>2025-09-20</lastmod>
     </url>
     <url>
          <loc>https://theagenticguy.github.io/agent-script/user-guide/spec-anatomy/</loc>
-         <lastmod>2025-08-05</lastmod>
+         <lastmod>2025-09-20</lastmod>
     </url>
     <url>
          <loc>https://theagenticguy.github.io/agent-script/user-guide/specifications/</loc>
-         <lastmod>2025-08-05</lastmod>
+         <lastmod>2025-09-20</lastmod>
     </url>
     <url>
          <loc>https://theagenticguy.github.io/agent-script/reference/agent_script_tools/</loc>
-         <lastmod>2025-08-05</lastmod>
+         <lastmod>2025-09-20</lastmod>
     </url>
     <url>
          <loc>https://theagenticguy.github.io/agent-script/reference/agent_script_tools/drivers/</loc>
-         <lastmod>2025-08-05</lastmod>
+         <lastmod>2025-09-20</lastmod>
     </url>
     <url>
          <loc>https://theagenticguy.github.io/agent-script/reference/agent_script_tools/scripts/</loc>
-         <lastmod>2025-08-05</lastmod>
+         <lastmod>2025-09-20</lastmod>
+    </url>
+    <url>
+         <loc>https://theagenticguy.github.io/agent-script/reference/agent_script_tools/simplified_drivers/</loc>
+         <lastmod>2025-09-20</lastmod>
     </url>
     <url>
          <loc>https://theagenticguy.github.io/agent-script/reference/agent_script_spec/</loc>
-         <lastmod>2025-08-05</lastmod>
+         <lastmod>2025-09-20</lastmod>
     </url>
     <url>
          <loc>https://theagenticguy.github.io/agent-script/reference/agent_script_spec/generate/</loc>
-         <lastmod>2025-08-05</lastmod>
+         <lastmod>2025-09-20</lastmod>
     </url>
     <url>
          <loc>https://theagenticguy.github.io/agent-script/reference/agent_script_spec/models/</loc>
-         <lastmod>2025-08-05</lastmod>
+         <lastmod>2025-09-20</lastmod>
+    </url>
+    <url>
+         <loc>https://theagenticguy.github.io/agent-script/reference/agent_script_spec/simplified_models/</loc>
+         <lastmod>2025-09-20</lastmod>
     </url>
 </urlset>
